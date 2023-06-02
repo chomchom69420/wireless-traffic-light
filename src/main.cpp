@@ -8,9 +8,6 @@ const char *PWD = "sohamc621";
 long last_time = 0;
 char data[100];
 
-//Timer 
-hw_timer_t *lamp_timer = NULL;
-
 // MQTT client
 WiFiClient wifiClient;
 PubSubClient mqttClient(wifiClient); 
@@ -68,13 +65,6 @@ void setup() {
   setupMQTT();
 
   pinMode(13, OUTPUT);
-
-  //Timer settings
-  lamp_timer = timerBegin(0, 80, true);
-  timerAttachInterrupt(lamp_timer, &onTimer, true);
-  timerAlarmWrite(lamp_timer, 1000000, true);
-  timerAlarmEnable(lamp_timer); //Just Enable
-    
 }
 
 
