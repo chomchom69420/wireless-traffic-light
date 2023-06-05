@@ -1,13 +1,10 @@
 #include "mqtt.h"
 #include <ArduinoJson.h>
+#include "credentials.h"
+#include <WiFi.h>
 
 WiFiClient wifiClient;
 PubSubClient mqttClient(wifiClient); 
-
-/*  Topics  */
-#define SLAVE_UPDATES_TOPIC "/traffic/slave_updates"
-#define MASTER_UPDATES_TOPIC "/traffic/updates"
-#define SIGNAL_PUBLISH_TOPIC "/traffic/signals"
 
 //used to setup MQTT server and callback function
 void mqtt_setup() {
@@ -65,8 +62,23 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
 void mqtt_publish_signal(int green_slave, int timer_in_s)
 {
   char payload[500];
-  sprintf(payload, "{\"green\":%d,\"timer\":%d}", green_slave, timer_in_s);
+  // sprintf(payload, "{\"green\":%d,\"timer\":%d}", green_slave, timer_in_s);
+  // mqttClient.publish(SIGNAL_PUBLISH_TOPIC, payload);
+
+  const int capacity = JSON_OBJECT_SIZE(3);
+  StaticJsonBuffer<capacity> jb;
+
+  // Create a JsonObject
+  JsonObject& obj = jb.createObject();  
+
+  obj["green"]=green_slave;
+  obj["timer"]=timer_in_s;
+
+  //Serializing into payload 
+  obj.printTo(payload);
+
   mqttClient.publish(SIGNAL_PUBLISH_TOPIC, payload);
+
 }
 
 void parse_mqtt_updates(byte* payload)
