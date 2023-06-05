@@ -4,6 +4,11 @@
 WiFiClient wifiClient;
 PubSubClient mqttClient(wifiClient); 
 
+/*  Topics  */
+#define SLAVE_UPDATES_TOPIC "/traffic/slave_updates"
+#define MASTER_UPDATES_TOPIC "/traffic/updates"
+#define SIGNAL_PUBLISH_TOPIC "/traffic/signals"
+
 //used to setup MQTT server and callback function
 void mqtt_setup() {
 
@@ -12,7 +17,6 @@ void mqtt_setup() {
 
   // set the callback function
   mqttClient.setCallback(mqtt_callback);
-
 }
 
 //for connecting to MQTT broker
@@ -45,17 +49,24 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
   Serial.print(topic);
   Serial.print("\n");
 
-  if(topic=="/traffic/updates")
+  if(topic==MASTER_UPDATES_TOPIC)
   {
     //Parse updates 
     parse_mqtt_updates(payload);
+  }
+  else if(topic==SLAVE_UPDATES_TOPIC)
+  {
+    //parse updates from slaves 
 
+    //check with the desired state present in the master 
   }
 }
 
-void mqtt_publish(char* topic, char* payload)
+void mqtt_publish_signal(int green_slave, int timer_in_s)
 {
-  mqttClient.publish(topic, payload);
+  char payload[500];
+  sprintf(payload, "{\"green\":%d,\"timer\":%d}", green_slave, timer_in_s);
+  mqttClient.publish(SIGNAL_PUBLISH_TOPIC, payload);
 }
 
 void parse_mqtt_updates(byte* payload)
@@ -80,12 +91,13 @@ void parse_mqtt_updates(byte* payload)
   const char* sender = parsed["sender"];
   int timers[clients];                    //time in seconds
 
-  for(unsigned int i=0; i<clients, i++)
+  //Update timers
+  for(unsigned int i=0; i<clients; i++)
   {
     char* clientname="timer";
     clientname += (i+1);
     timers[i] = parsed[clientname];
-
   }
 
+  //Pass the timers as limits in the delay_set function 
 }

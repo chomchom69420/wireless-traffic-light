@@ -26,7 +26,7 @@ void delay_init(){
         prescaler 2
         countUp true
         */
-        signal_timer = timerBegin(0, 2, true);
+        signal_timer = timerBegin(0, 80, true);
 
         //Attach interrupt function to the timer
         timerAttachInterrupt(signal_timer, &onTimer, true);
@@ -34,7 +34,7 @@ void delay_init(){
         //Set timer alarm
         /*
         timer struct: signal_timer
-        alarm_value: 1000000
+        alarm_value: 1000000 (1s)
         autoreload: true
         */
         timerAlarmWrite(signal_timer, 1000000, true); 

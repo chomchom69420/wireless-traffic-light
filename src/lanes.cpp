@@ -10,7 +10,7 @@ void lanes_start_signals() {
     signal_state = lane1;
 }
 
-void lane_update() {
+void lanes_update() {
     switch (signal_state)
     {
     case lane1:

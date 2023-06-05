@@ -10,6 +10,6 @@ void lanes_start_signals();
 /*
 This method is used to update the lanes fsm to change state from allow traffic on one lane to the other depending on the timer values 
 */
-void lane_update();
+void lanes_update();
 
 #endif

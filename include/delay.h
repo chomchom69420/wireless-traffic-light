@@ -18,7 +18,7 @@ void delay_init();
 unsigned delay_get(unsigned num);
 
 /* set the counter limit and reset the count for the specified instance */
-void delay_set(unsigned int num, unsigned int msec);
+void delay_set(unsigned int num, unsigned int time_in_s);
 
 /* return 1 if the specified instance of the counter has reached its
 * limit, otherwise, return 0 */
